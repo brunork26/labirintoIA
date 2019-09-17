@@ -1,20 +1,20 @@
-#Para compilar o projeto: 
+<h1>#Para compilar o projeto:</h1> 
 
     ./compile
 
-#Para compilar o projeto e executar:
+<h1>#Para compilar o projeto e executar:</h1>
 
     ./compile run
 
-#Para limpar o projeto:
+<h1>#Para limpar o projeto:</h1>
 
     ./compile clean
 
 
-#Inicio: 
+<h1>#Inicio: </h1>
 
     Classe de inicio do projeto
 
-#LeituraDeArquivo:
+<h1>#LeituraDeArquivo:</h1>
     Classe para leitura dos labirintos
 
