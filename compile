@@ -1,2 +1,11 @@
+rm -rf *.class *~
 javac Inicio.java
 javac LeitorDeArquivo.java
+
+if [[ ( $1 == "run" ) ]];
+then java Inicio 
+fi
+
+if [[ ( $1 == "clean" ) ]];
+then  rm -rf *.class *~
+fi
