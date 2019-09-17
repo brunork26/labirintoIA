@@ -1,11 +1,22 @@
-rm -rf *.class *~
-javac Inicio.java
-javac LeitorDeArquivo.java
-
 if [[ ( $1 == "run" ) ]];
-then java Inicio 
+then
+    rm -rf *.class *~
+    javac Inicio.java
+    javac LeitorDeArquivo.java
+    javac Labirinto.java
+    echo "Iniciando projeto"
+    java Inicio 
+else
+    if [[ ( $1 == "clean" ) ]];
+        then  
+            rm -rf *.class *~
+            echo "Projeto Limpo."
+        else 
+            rm -rf *.class *~
+            javac Inicio.java
+            javac LeitorDeArquivo.java
+            javac Labirinto.java
+            echo "Projeto Compilado."
+    fi
 fi
 
-if [[ ( $1 == "clean" ) ]];
-then  rm -rf *.class *~
-fi
