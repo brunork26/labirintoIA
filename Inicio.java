@@ -8,7 +8,8 @@ public class Inicio {
         Scanner sc = new Scanner(System.in);
         System.out.println("Por favor identifique o nome do labirinto que se encontra na pasta /labirintos/ :");
         String nomeLabirinto = sc.nextLine();
-        Labirinto labirinto = new Labirinto(labirinto.lerArquivo(nomeLabirinto));
-        
+        String [][] lab = LeitorDeArquivo.lerArquivo(nomeLabirinto);
+        Labirinto labirinto = new Labirinto(lab);
+        labirinto.imprimeLabirinto();
     }
 }
