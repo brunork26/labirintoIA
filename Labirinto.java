@@ -12,4 +12,7 @@ public class Labirinto {
             System.out.println(line);
         }
     }
+    public int getTamLabirinto(){
+        return campo.length;
+    }
 }
