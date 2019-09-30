@@ -9,11 +9,11 @@ public class Ag {
     public void aplicarAG(Labirinto labirinto){
 
         System.out.println("\n Iniciando Algoritmo Genético...\n");
-        criarPopulacao(labirinto.getTamLabirinto());
+        criarPopulacaoInicial(labirinto.getTamLabirinto());
 
     }
     // Como campo é quadrático, a populacao inicial vai ser de 10 individuos com 100 cromossomos
-    public static void criarPopulacao(int tam){
+    public static void criarPopulacaoInicial(int tam){
         System.out.println("\nCriando Populacao Inicial...\n");
         int [][] individuos = new int[tam][tam*tam] ; 
         Random gerador = new Random();
@@ -31,6 +31,7 @@ public class Ag {
                         }
                     }
                     individuos[j][k] = valCromossomo;
+                    System.out.println(valCromossomo + "\n");
 
                 }
             }

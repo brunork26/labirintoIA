@@ -5,6 +5,8 @@ then
     javac LeitorDeArquivo.java
     javac Labirinto.java
     javac Ag.java
+    javac Nodo.java
+    javac AStar.java
     echo "Iniciando projeto"
     java Inicio 
 else
@@ -18,6 +20,8 @@ else
             javac LeitorDeArquivo.java
             javac Labirinto.java
             javac Ag.java
+            javac Nodo.java
+            javac AStar.java
             echo "Projeto Compilado."
     fi
 fi
