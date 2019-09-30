@@ -15,8 +15,11 @@ public class Inicio {
         Labirinto labirinto = new Labirinto(lab);
         Ag algoritmoAG = new Ag();
         // labirinto.imprimeLabirinto();
-        algoritmoAG.aplicarAG(labirinto);
-
+        
+            algoritmoAG.aplicarAG(labirinto);
+   
+        
+        
         /*
         labirinto = new Labirinto(leLabirinto.lerArquivo(nomeLabirinto));
         labirinto.imprimeLabirinto();

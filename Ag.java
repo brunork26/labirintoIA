@@ -8,20 +8,27 @@ public class Ag {
     public Labirinto labirinto = null;
     public int contZero;
     public int geracao = 0;
-    public static int populacao = 10;
+    public static int populacao = 100;
 
  
     public Ag(){};
 
     public void aplicarAG(Labirinto labirinto){
-        this.labirinto = labirinto;
-        System.out.println("\n Iniciando Algoritmo Genético...\n");
-        criarPopulacaoInicial(this.labirinto.qtdCamposLivres());
-        imprimeMatrizPopulacao();
-        aplicarAptidao();
-        aplicarSelecaoCBF();
-        aplicarBrasileirao();
-        aplicarXmen();
+        int cont = 100;
+        
+            this.labirinto = labirinto;
+            System.out.println("\n Iniciando Algoritmo Genético...\n");
+            criarPopulacaoInicial(this.labirinto.qtdCamposLivres());
+            // imprimeMatrizPopulacao();
+        while(cont > 0) {
+            aplicarAptidao();
+            aplicarSelecaoCBF();
+            aplicarBrasileirao();
+            aplicarXmen();
+            this.individuos = this.individuosIntermediario;
+            //aplicarXmen();
+            cont--;
+        }
     }
     // Como campo é quadrático, a populacao inicial vai ser de 10 individuos com 100 cromossomos
     public static void criarPopulacaoInicial(int tam){
@@ -61,9 +68,9 @@ public class Ag {
     public boolean validaSolucao(int xPos, int yPos, Cromossomo cromossomo) {
         String[][] campo = labirinto.getCampo();
         if(campo[xPos][yPos].equals("S") && cromossomo.aptidao == 0) { 
-            System.out.println("Acho o CAMINHO"); {
-                System.exit(0);
-            }
+            System.out.println("Acho o CAMINHO"); 
+            System.exit(0);
+            
         }
         if(campo[xPos][yPos].equals("S")) return true;
         return false;
@@ -193,9 +200,9 @@ public class Ag {
                 }
                      
             }
-            if(cromossomo.aptidao < 30) {
-                System.out.println("Cromossomo: " + index + " Aptidão: " + cromossomo.aptidao + "\n");
-            }        
+            // if(cromossomo.aptidao < 30) {
+                //System.out.println("Cromossomo: " + index + " Aptidão: " + cromossomo.aptidao + "\n");
+            //}        
         }
     }
 
@@ -210,6 +217,7 @@ public class Ag {
         }
         
         System.out.println("Aptidão " + melhorAptidao.aptidao);
+        melhorAptidao.aptidao = 0;
         System.out.println("Melhor cromossomo " + melhorAptidao.toString());
         this.individuosIntermediario.add(melhorAptidao);
     }
@@ -236,14 +244,14 @@ public class Ag {
             while(torneio1.equals(torneio2)) {
                 torneio2 = individuos.get(index.nextInt(individuos.size()));
             }
-            System.out.println("primeiro: " + torneio1.aptidao);
-            System.out.println("segundo: " + torneio2.aptidao);
+            // System.out.println("primeiro: " + torneio1.aptidao);
+            //System.out.println("segundo: " + torneio2.aptidao);
 
             if(torneio1.aptidao < torneio2.aptidao) {
                 pai = torneio1;
             } else pai = torneio2;
 
-            System.out.println("pai: " + pai.aptidao);
+            //System.out.println("pai: " + pai.aptidao);
 
             torneio1 = individuos.get(index.nextInt(individuos.size()));
             torneio2 = individuos.get(index.nextInt(individuos.size()));
@@ -254,10 +262,10 @@ public class Ag {
             if(torneio1.aptidao < torneio2.aptidao) {
                 mae = torneio1;
             } else mae = torneio2;
-            System.out.println("primeiro: " + torneio1.aptidao);
-            System.out.println("segundo: " + torneio2.aptidao);
+            // System.out.println("primeiro: " + torneio1.aptidao);
+            // System.out.println("segundo: " + torneio2.aptidao);
 
-            System.out.println("mae: " + mae.aptidao);
+            // System.out.println("mae: " + mae.aptidao);
 
             // cruzamento 
             Random pontos = new Random();
@@ -280,10 +288,10 @@ public class Ag {
             // 0 --- ponto1
             // ponto1 + 1 --- ponto2
             // ponto2 + 1 --- fim se existir
-            System.out.println("Pai: " + pai.getGenes());
-            System.out.println("Mae: " + mae.getGenes());
-            System.out.println("Ponto1: " + pontos1);
-            System.out.println("Ponto2: " + pontos2);
+            // System.out.println("Pai: " + pai.getGenes());
+            // System.out.println("Mae: " + mae.getGenes());
+            // System.out.println("Ponto1: " + pontos1);
+            // System.out.println("Ponto2: " + pontos2);
             for(int i = 0; i < pontos1; i++) {
                 filho.addGene(pai.getGenes().get(i));
                 filha.addGene(mae.getGenes().get(i));
@@ -297,8 +305,8 @@ public class Ag {
                 filha.addGene(mae.getGenes().get(i));
             }
             
-            System.out.println("Filho: " + filho.getGenes());
-            System.out.println("Filha: " + filha.getGenes());
+            // System.out.println("Filho: " + filho.getGenes());
+            // System.out.println("Filha: " + filha.getGenes());
 
             this.individuosIntermediario.add(filho);
             this.individuosIntermediario.add(filha);
@@ -314,7 +322,18 @@ public class Ag {
 
     public void aplicarXmen() {
         Random index = new Random();
-        Cromossomo wolverine = this.individuosIntermediario.get(index.nextInt(this.individuosIntermediario.size()));
-        System.out.println(wolverine.toString());
+        int i = index.nextInt(this.individuosIntermediario.size());
+        Cromossomo wolverine = this.individuosIntermediario.get(i);
+        this.individuosIntermediario.remove(i);
+        //System.out.println(wolverine.toString());
+
+        Random escolheGene = new Random();
+        int nGene = escolheGene.nextInt(this.labirinto.qtdCamposLivres());
+
+        Random valorGene = new Random();
+        int vGene = valorGene.nextInt(7) + 1;
+
+        wolverine.getGenes().set(nGene, vGene);
+        this.individuosIntermediario.add(wolverine);
     }
 }
