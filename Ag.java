@@ -3,35 +3,48 @@ import java.util.Random;
 
 public class Ag {
     // static int [][] individuos;
-    private static ArrayList<Cromossomo> individuos = new ArrayList<Cromossomo>();
-    private static ArrayList<Cromossomo> individuosIntermediario = new ArrayList<Cromossomo>();
+    private ArrayList<Cromossomo> individuos = new ArrayList<Cromossomo>();
+    private ArrayList<Cromossomo> individuosIntermediario = new ArrayList<Cromossomo>();
     public Labirinto labirinto = null;
     public int contZero;
     public int geracao = 0;
-    public static int populacao = 100;
+    public static int populacao = 100000;
 
  
     public Ag(){};
 
     public void aplicarAG(Labirinto labirinto){
-        int cont = 10000;
+        int cont = 0;
         
             this.labirinto = labirinto;
             System.out.println("\n Iniciando Algoritmo Genético...\n");
             criarPopulacaoInicial(this.labirinto.qtdCamposLivres());
             // imprimeMatrizPopulacao();
-        while(cont > 0) {
+        while(cont < 10000) {
+            System.out.println("\n GERAÇÃO : " + cont );
+            for(int i = 0; i < this.individuos.size(); i++) {
+                //this.individuos.get(i).aptidao = 0;
+                 //System.out.println("Aptidão: " + this.individuos.get(i).aptidao);
+                 
+            }
             aplicarAptidao();
             aplicarSelecaoCBF();
             aplicarBrasileirao();
-            aplicarXmen();
+            int c = 0;
+            while(c < 1000) {
+                c++;
+                aplicarXmen();
+            }
+            
+            //this.individuos = null; 
             this.individuos = this.individuosIntermediario;
+            this.individuosIntermediario = new ArrayList<Cromossomo>();
             //aplicarXmen();
-            cont--;
+            cont++;
         }
     }
     // Como campo é quadrático, a populacao inicial vai ser de 10 individuos com 100 cromossomos
-    public static void criarPopulacaoInicial(int tam){
+    public void criarPopulacaoInicial(int tam){
         System.out.println("\nCriando Populacao Inicial...\n");
         Random gerador = new Random();
         int gene;
@@ -43,7 +56,7 @@ public class Ag {
                 gene = gerador.nextInt(7) + 1; // garante de 1 até 8
                 cromossomo.addGene(gene);
             }
-            individuos.add(cromossomo);
+            this.individuos.add(cromossomo);
         }
 
         // for(int i = 0; i < individuos.size(); i++) {
@@ -53,14 +66,16 @@ public class Ag {
 
     public void imprimeMatrizPopulacao(){
         System.out.println("Número de individuos: " + individuos.size());
-        for(int i = 0; i < individuos.size(); i++) {
-            System.out.println(individuos.get(i).toString());
+        for(int i = 0; i < this.individuos.size(); i++) {
+            System.out.println(this.individuos.get(i).toString());
         }
     }
 
     public void validaAptidao(int xPos, int yPos, Cromossomo cromossomo) {
         String[][] campo = labirinto.getCampo();
+        //System.out.println(xPos + " " + yPos);
         if(campo[xPos][yPos].equals("1")) {
+            // System.out.println("Bateu parede");
             cromossomo.aptidao += 1;
         }
     }
@@ -68,6 +83,7 @@ public class Ag {
     public boolean validaSolucao(int xPos, int yPos, Cromossomo cromossomo) {
         String[][] campo = labirinto.getCampo();
         if(campo[xPos][yPos].equals("S") && cromossomo.aptidao == 0) { 
+            System.out.println("Caminho: " + cromossomo.getGenes());
             System.out.println("Aptidão: " + cromossomo.aptidao);
             System.out.println("Acho o CAMINHO"); 
             System.exit(0);
@@ -80,11 +96,15 @@ public class Ag {
     public void aplicarAptidao(){
         String[][] campo = labirinto.getCampo();
         int index = 0;
-        for (Cromossomo cromossomo : individuos) {
-            index++;        
+        String caminho = "";
+        for (Cromossomo cromossomo : this.individuos) {
+            index++; 
+            int xPos = 0; // novaPosicao
+            int yPos = 0; // novaPosicao
+            cromossomo.x = 0;
+            cromossomo.y = 0;     
+            //System.out.println(cromossomo.toString());
             for (Integer gene : cromossomo.getGenes()) {
-                int xPos = 0; // novaPosicao
-                int yPos = 0; // novaPosicao
                 // movimenta para cima
                 if(gene == 1) {
                     xPos = cromossomo.x - 1;
@@ -210,7 +230,7 @@ public class Ag {
     public void aplicarSelecaoCBF() {
         int min = Integer.MAX_VALUE;
         Cromossomo melhorAptidao = null;
-        for (Cromossomo cromossomo : individuos) {
+        for (Cromossomo cromossomo : this.individuos) {
             if(min > cromossomo.aptidao) {
                 min = cromossomo.aptidao;
                 melhorAptidao = cromossomo;
@@ -230,7 +250,7 @@ public class Ag {
         // Cromossomo torneio1 = null;
         // Cromossomo torneio2 = null;
         int contTest = 0;
-        while(populacao > individuosIntermediario.size()) {
+        while(populacao > this.individuosIntermediario.size()) {
         //while(contTest < 3) {
             Cromossomo pai = null;
             Cromossomo mae = null;
@@ -240,10 +260,10 @@ public class Ag {
             Cromossomo filha = new Cromossomo();
             
             contTest++;
-            torneio1 = individuos.get(index.nextInt(individuos.size()));
-            torneio2 = individuos.get(index.nextInt(individuos.size()));
+            torneio1 = this.individuos.get(index.nextInt(this.individuos.size()));
+            torneio2 = this.individuos.get(index.nextInt(this.individuos.size()));
             while(torneio1.equals(torneio2)) {
-                torneio2 = individuos.get(index.nextInt(individuos.size()));
+                torneio2 = this.individuos.get(index.nextInt(this.individuos.size()));
             }
             // System.out.println("primeiro: " + torneio1.aptidao);
             //System.out.println("segundo: " + torneio2.aptidao);
@@ -254,10 +274,10 @@ public class Ag {
 
             //System.out.println("pai: " + pai.aptidao);
 
-            torneio1 = individuos.get(index.nextInt(individuos.size()));
-            torneio2 = individuos.get(index.nextInt(individuos.size()));
+            torneio1 = this.individuos.get(index.nextInt(this.individuos.size()));
+            torneio2 = this.individuos.get(index.nextInt(this.individuos.size()));
             while(torneio1.equals(torneio2)) {
-                torneio2 = individuos.get(index.nextInt(individuos.size()));
+                torneio2 = this.individuos.get(index.nextInt(this.individuos.size()));
             }
 
             if(torneio1.aptidao < torneio2.aptidao) {
@@ -275,8 +295,8 @@ public class Ag {
             while(pontos1 == pontos2 || 
                         pontos1 == 0 || 
                         pontos2 == 0 || 
-                        pontos1 == individuos.size() - 1 || 
-                        pontos2 == individuos.size() - 1) {
+                        pontos1 == this.individuos.size() - 1 || 
+                        pontos2 == this.individuos.size() - 1) {
                             pontos1 = pontos.nextInt(labirinto.qtdCamposLivres());
                             pontos2 = pontos.nextInt(labirinto.qtdCamposLivres());
             } 
