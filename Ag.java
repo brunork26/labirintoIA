@@ -14,7 +14,7 @@ public class Ag {
     public Ag(){};
 
     public void aplicarAG(Labirinto labirinto){
-        int cont = 100;
+        int cont = 10000;
         
             this.labirinto = labirinto;
             System.out.println("\n Iniciando Algoritmo Genético...\n");
@@ -68,6 +68,7 @@ public class Ag {
     public boolean validaSolucao(int xPos, int yPos, Cromossomo cromossomo) {
         String[][] campo = labirinto.getCampo();
         if(campo[xPos][yPos].equals("S") && cromossomo.aptidao == 0) { 
+            System.out.println("Aptidão: " + cromossomo.aptidao);
             System.out.println("Acho o CAMINHO"); 
             System.exit(0);
             
