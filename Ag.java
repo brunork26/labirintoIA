@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class Ag {
-    public String [][] matrizPopulacao;
+    static int [][] individuos;
     int contZero;
  
     public Ag(){};
@@ -9,13 +9,14 @@ public class Ag {
     public void aplicarAG(Labirinto labirinto){
 
         System.out.println("\n Iniciando Algoritmo Genético...\n");
-        criarPopulacaoInicial(labirinto.getTamLabirinto());
+        criarPopulacaoInicial(labirinto.qtdCamposLivres());
+        imprimeMatrizPopulacao();
 
     }
     // Como campo é quadrático, a populacao inicial vai ser de 10 individuos com 100 cromossomos
     public static void criarPopulacaoInicial(int tam){
         System.out.println("\nCriando Populacao Inicial...\n");
-        int [][] individuos = new int[tam][tam*tam] ; 
+        individuos = new int[tam][tam*tam] ; 
         Random gerador = new Random();
         int valCromossomo;
 
@@ -31,11 +32,21 @@ public class Ag {
                         }
                     }
                     individuos[j][k] = valCromossomo;
-                    System.out.println(valCromossomo + "\n");
 
                 }
+            }   
+        }
+    }
+
+    public void imprimeMatrizPopulacao(){
+        System.out.println(individuos);
+        for(int i = 0; i < individuos.length; i++){
+            String line = "";
+            for(int j = 0; j < individuos[i].length; j++ ){
+                line += individuos[i][j] + " "; 
             }
-            
+            System.out.println(line);
+            line += "\n";
         }
     }
 
