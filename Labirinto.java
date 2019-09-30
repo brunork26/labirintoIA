@@ -32,4 +32,17 @@ public class Labirinto {
         }
         return tamanho;
     }
+
+    public int qtdCamposLivres() {
+        int tamanho = 0;
+        for(int i = 0; i < this.campo.length; i++) {    
+            for(int j = 0; j < this.campo[i].length; j++) {
+                //System.out.println(campo[i][j]);
+                if(campo[i][j].equals("0")) {
+                    tamanho++;
+                }
+            }
+        }
+        return tamanho;
+    }
 }
