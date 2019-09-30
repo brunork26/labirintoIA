@@ -9,12 +9,12 @@ public class Inicio {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         System.out.println("Por favor identifique o nome do labirinto que se encontra na pasta /labirintos/ :");
-        String nomeLabirinto = sc.nextLine();
+        String nomeLabirinto = "labirinto1_10" ; //sc.nextLine();
 
         String [][] lab = LeitorDeArquivo.lerArquivo(nomeLabirinto);
         Labirinto labirinto = new Labirinto(lab);
         Ag algoritmoAG = new Ag();
-        labirinto.imprimeLabirinto();
+        // labirinto.imprimeLabirinto();
         algoritmoAG.aplicarAG(labirinto);
 
         /*

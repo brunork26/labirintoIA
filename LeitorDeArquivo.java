@@ -14,7 +14,7 @@ public class LeitorDeArquivo {
 
             String linha = lerArquivo.readLine();
             int tamanho = Integer.parseInt(linha);
-            System.out.printf("%s\n", tamanho);
+            //System.out.printf("%s\n", tamanho);
             mapeando = new String[tamanho][tamanho];
             int cont = 0;
             while (linha != null) {
@@ -24,10 +24,10 @@ public class LeitorDeArquivo {
                 String[] conteudo = linha.split(" ");
                 for(int i = 0; i < tamanho; i++){
                     
-                    System.out.printf("\nCont: " + cont + " " + "conteudo: " + conteudo[i] + "\n");
+                    //System.out.printf("\nCont: " + cont + " " + "conteudo: " + conteudo[i] + "\n");
                     mapeando[cont][i] = conteudo[i];
                 }
-                System.out.printf("cont %s\n", cont);
+                //System.out.printf("cont %s\n", cont);
                 cont++;
             }
             arquivo.close();
