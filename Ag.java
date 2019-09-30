@@ -21,7 +21,7 @@ public class Ag {
         aplicarAptidao();
         aplicarSelecaoCBF();
         aplicarBrasileirao();
-
+        aplicarXmen();
     }
     // Como campo é quadrático, a populacao inicial vai ser de 10 individuos com 100 cromossomos
     public static void criarPopulacaoInicial(int tam){
@@ -58,6 +58,17 @@ public class Ag {
         }
     }
 
+    public boolean validaSolucao(int xPos, int yPos, Cromossomo cromossomo) {
+        String[][] campo = labirinto.getCampo();
+        if(campo[xPos][yPos].equals("S") && cromossomo.aptidao == 0) { 
+            System.out.println("Acho o CAMINHO"); {
+                System.exit(0);
+            }
+        }
+        if(campo[xPos][yPos].equals("S")) return true;
+        return false;
+    }
+
     public void aplicarAptidao(){
         String[][] campo = labirinto.getCampo();
         int index = 0;
@@ -75,6 +86,9 @@ public class Ag {
                         cromossomo.aptidao += 100;
                     } else {
                         this.validaAptidao(xPos, yPos, cromossomo);
+                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
+                            break;
+                        }                      
                         cromossomo.atualizaPosicao(xPos, yPos);
                     } 
                 }
@@ -86,6 +100,9 @@ public class Ag {
                         cromossomo.aptidao += 100;
                     } else {
                         this.validaAptidao(xPos, yPos, cromossomo);
+                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
+                            break;
+                        } 
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
                 }
@@ -97,6 +114,9 @@ public class Ag {
                         cromossomo.aptidao += 100;
                     } else {
                         this.validaAptidao(xPos, yPos, cromossomo);
+                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
+                            break;
+                        } 
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
                 }
@@ -108,6 +128,9 @@ public class Ag {
                         cromossomo.aptidao += 100;
                     } else {
                         this.validaAptidao(xPos, yPos, cromossomo);
+                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
+                            break;
+                        } 
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
                 }
@@ -119,6 +142,9 @@ public class Ag {
                         cromossomo.aptidao += 100;
                     } else {
                         this.validaAptidao(xPos, yPos, cromossomo);
+                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
+                            break;
+                        } 
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
                 }
@@ -130,6 +156,9 @@ public class Ag {
                         cromossomo.aptidao += 100;
                     } else {
                         this.validaAptidao(xPos, yPos, cromossomo);
+                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
+                            break;
+                        } 
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
                 }
@@ -142,6 +171,9 @@ public class Ag {
                         cromossomo.aptidao += 100;
                     } else {
                         this.validaAptidao(xPos, yPos, cromossomo);
+                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
+                            break;
+                        } 
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
                 }
@@ -153,9 +185,13 @@ public class Ag {
                         cromossomo.aptidao += 100;
                     } else {
                         this.validaAptidao(xPos, yPos, cromossomo);
+                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
+                            break;
+                        } 
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
-                }        
+                }
+                     
             }
             if(cromossomo.aptidao < 30) {
                 System.out.println("Cromossomo: " + index + " Aptidão: " + cromossomo.aptidao + "\n");
@@ -185,14 +221,14 @@ public class Ag {
         // Cromossomo torneio1 = null;
         // Cromossomo torneio2 = null;
         int contTest = 0;
-        //while(populacao > individuosIntermediario.size()) {
-        while(contTest < 3) {
+        while(populacao > individuosIntermediario.size()) {
+        //while(contTest < 3) {
             Cromossomo pai = null;
             Cromossomo mae = null;
             Cromossomo torneio1 = null;
             Cromossomo torneio2 = null;
-            Cromossomo filho = null;
-            Cromossomo filha = null;
+            Cromossomo filho = new Cromossomo();
+            Cromossomo filha = new Cromossomo();
             
             contTest++;
             torneio1 = individuos.get(index.nextInt(individuos.size()));
@@ -225,25 +261,60 @@ public class Ag {
 
             // cruzamento 
             Random pontos = new Random();
-            int pontos1 = pontos.nextInt(individuos.size());
-            int pontos2 = pontos.nextInt(individuos.size());
-            while(pontos1 == pontos2) {
-                pontos2 = pontos.nextInt(individuos.size());
+            int pontos1 = pontos.nextInt(labirinto.qtdCamposLivres());
+            int pontos2 = pontos.nextInt(labirinto.qtdCamposLivres());
+            while(pontos1 == pontos2 || 
+                        pontos1 == 0 || 
+                        pontos2 == 0 || 
+                        pontos1 == individuos.size() - 1 || 
+                        pontos2 == individuos.size() - 1) {
+                            pontos1 = pontos.nextInt(labirinto.qtdCamposLivres());
+                            pontos2 = pontos.nextInt(labirinto.qtdCamposLivres());
             } 
-            int aux = ponto1;
+            int aux = pontos1;
             // garante ponto 1 menor
             if(pontos2 < pontos1) {
                 pontos1 = pontos2;
                 pontos2 = aux;  
             }
-
+            // 0 --- ponto1
+            // ponto1 + 1 --- ponto2
+            // ponto2 + 1 --- fim se existir
+            System.out.println("Pai: " + pai.getGenes());
+            System.out.println("Mae: " + mae.getGenes());
+            System.out.println("Ponto1: " + pontos1);
+            System.out.println("Ponto2: " + pontos2);
+            for(int i = 0; i < pontos1; i++) {
+                filho.addGene(pai.getGenes().get(i));
+                filha.addGene(mae.getGenes().get(i));
+            }
+            for(int i = pontos1; i < pontos2; i++) {
+                filho.addGene(mae.getGenes().get(i));
+                filha.addGene(pai.getGenes().get(i));
+            }
+            for(int i = pontos2; i < labirinto.qtdCamposLivres(); i++) {
+                filho.addGene(pai.getGenes().get(i));
+                filha.addGene(mae.getGenes().get(i));
+            }
             
+            System.out.println("Filho: " + filho.getGenes());
+            System.out.println("Filha: " + filha.getGenes());
 
-
+            this.individuosIntermediario.add(filho);
+            this.individuosIntermediario.add(filha);
 
         }
         
+        this.individuosIntermediario.remove(this.individuosIntermediario.size() - 1);
 
+        // for(int i = 0; i < this.individuosIntermediario.size(); i++) {
+        //     System.out.println(this.individuosIntermediario.get(i) + "\n");
+        // }
+    }
 
+    public void aplicarXmen() {
+        Random index = new Random();
+        Cromossomo wolverine = this.individuosIntermediario.get(index.nextInt(this.individuosIntermediario.size()));
+        System.out.println(wolverine.toString());
     }
 }
