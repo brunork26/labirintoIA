@@ -10,6 +10,8 @@ public class Inicio {
         String nomeLabirinto = sc.nextLine();
         String [][] lab = LeitorDeArquivo.lerArquivo(nomeLabirinto);
         Labirinto labirinto = new Labirinto(lab);
+        Ag algoritmoAG = new Ag();
         labirinto.imprimeLabirinto();
+        algoritmoAG.aplicarAG(labirinto);
     }
 }

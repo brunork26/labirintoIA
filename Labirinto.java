@@ -1,5 +1,6 @@
 public class Labirinto {
     private static String[][] campo;
+
     public Labirinto(String[][] campo) {
         this.campo = campo;
     }
@@ -13,6 +14,6 @@ public class Labirinto {
         }
     }
     public int getTamLabirinto(){
-        return campo.length;
+        return campo[0].length;
     }
 }
