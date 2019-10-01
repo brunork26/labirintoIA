@@ -11,6 +11,12 @@ public class Inicio {
         System.out.println("Por favor identifique o nome do labirinto que se encontra na pasta /labirintos/ :");
         String nomeLabirinto = sc.nextLine();
 
+        System.out.println("Por favor identifique o tamanho da população:");
+        int tamPopulacao = sc.nextInt();
+
+        System.out.println("Por favor identifique a porcentagem de mutação:");
+        int valMut = sc.nextInt();
+
         String [][] lab = LeitorDeArquivo.lerArquivo(nomeLabirinto);
         Labirinto labirinto = new Labirinto(lab);
         Ag algoritmoAG = new Ag();
@@ -53,7 +59,7 @@ public class Inicio {
         astar.displayResultado();
 
 
-        algoritmoAG.aplicarAG(labirinto);  
+        algoritmoAG.aplicarAG(labirinto, valMut, tamPopulacao);  
 
         // labirinto = new Labirinto(leLabirinto.lerArquivo(nomeLabirinto));
         // labirinto.imprimeLabirinto();

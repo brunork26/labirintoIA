@@ -12,16 +12,18 @@ public class Ag {
     public int geracao = 0;
     public static int populacao = 1000;
     public boolean terminou = false;
+    public int mutacao = 0;
  
     public Ag(){};
 
-    public void aplicarAG(Labirinto labirinto){
+    public void aplicarAG(Labirinto labirinto, int valMut, int populacao){
         int cont = 0;
+        this.populacao = populacao;
         this.labirinto = labirinto;
         System.out.println("\n Iniciando Algoritmo Genético...\n");
-        criarPopulacaoInicial(this.labirinto.qtdCamposLivres());
+        criarPopulacaoInicial(this.labirinto.qtdCamposLivres(), valMut);
         // imprimeMatrizPopulacao();
-        while(cont < 10000 ) {
+        while(cont < 1000000 ) {
             System.out.println("\n GERAÇÃO : " + cont );
             for(int i = 0; i < this.individuos.size(); i++) {
                 //this.individuos.get(i).aptidao = 0;
@@ -32,7 +34,7 @@ public class Ag {
             aplicarSelecaoCBF();
             aplicarBrasileirao();
             int c = 0;
-            while(c < 1000) {
+            while(c < this.mutacao) {
                 c++;
                 aplicarXmen();
             }
@@ -46,13 +48,14 @@ public class Ag {
 
     }
     // Como campo é quadrático, a populacao inicial vai ser de 10 individuos com 100 cromossomos
-    public void criarPopulacaoInicial(int tam){
+    public void criarPopulacaoInicial(int tam, int valMut){
         System.out.println("\nCriando Populacao Inicial...\n");
         Random gerador = new Random();
         int gene;
         System.out.println(tam);
         int tamCromossomo = tam; // talvez passar por parâmetro
-        for(int i = 0; i < populacao; i++) {
+
+        for(int i = 0; i < this.populacao; i++) {
             Cromossomo cromossomo = new Cromossomo();
             for(int j = 0; j < tamCromossomo; j++) { 
                 gene = gerador.nextInt(7) + 1; // garante de 1 até 8
@@ -60,6 +63,10 @@ public class Ag {
             }
             this.individuos.add(cromossomo);
         }
+
+        this.mutacao = ((tam*this.populacao)*valMut)/100;
+
+        System.out.println("mutacao: " + this.mutacao);
 
         // for(int i = 0; i < individuos.size(); i++) {
         //     System.out.println(individuos.get(i));
