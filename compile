@@ -8,6 +8,7 @@ then
     javac Nodo.java
     javac AStar.java
     javac Cromossomo.java
+    javac Path.java
     echo "Iniciando projeto"
     java Inicio 
 else
@@ -24,6 +25,7 @@ else
             javac Nodo.java
             javac AStar.java
             javac Cromossomo.java
+            javac Path.java
             echo "Projeto Compilado."
     fi
 fi

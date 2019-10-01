@@ -6,6 +6,8 @@ public class Cromossomo {
     public int aptidao = 0;
     public int x = 0;
     public int y = 0;
+    public ArrayList<Path> path = new ArrayList<Path>();
+    
 
     public Cromossomo() {
 

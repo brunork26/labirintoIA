@@ -3,24 +3,25 @@ import java.util.Random;
 
 public class Ag {
     // static int [][] individuos;
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
     private ArrayList<Cromossomo> individuos = new ArrayList<Cromossomo>();
     private ArrayList<Cromossomo> individuosIntermediario = new ArrayList<Cromossomo>();
     public Labirinto labirinto = null;
     public int contZero;
     public int geracao = 0;
-    public static int populacao = 100000;
-
+    public static int populacao = 1000;
+    public boolean terminou = false;
  
     public Ag(){};
 
     public void aplicarAG(Labirinto labirinto){
         int cont = 0;
-        
-            this.labirinto = labirinto;
-            System.out.println("\n Iniciando Algoritmo Genético...\n");
-            criarPopulacaoInicial(this.labirinto.qtdCamposLivres());
-            // imprimeMatrizPopulacao();
-        while(cont < 10000) {
+        this.labirinto = labirinto;
+        System.out.println("\n Iniciando Algoritmo Genético...\n");
+        criarPopulacaoInicial(this.labirinto.qtdCamposLivres());
+        // imprimeMatrizPopulacao();
+        while(cont < 10000 ) {
             System.out.println("\n GERAÇÃO : " + cont );
             for(int i = 0; i < this.individuos.size(); i++) {
                 //this.individuos.get(i).aptidao = 0;
@@ -42,6 +43,7 @@ public class Ag {
             //aplicarXmen();
             cont++;
         }
+
     }
     // Como campo é quadrático, a populacao inicial vai ser de 10 individuos com 100 cromossomos
     public void criarPopulacaoInicial(int tam){
@@ -74,6 +76,7 @@ public class Ag {
     public void validaAptidao(int xPos, int yPos, Cromossomo cromossomo) {
         String[][] campo = labirinto.getCampo();
         //System.out.println(xPos + " " + yPos);
+        cromossomo.path.add(new Path(xPos, yPos));
         if(campo[xPos][yPos].equals("1")) {
             // System.out.println("Bateu parede");
             cromossomo.aptidao += 1;
@@ -83,9 +86,28 @@ public class Ag {
     public boolean validaSolucao(int xPos, int yPos, Cromossomo cromossomo) {
         String[][] campo = labirinto.getCampo();
         if(campo[xPos][yPos].equals("S") && cromossomo.aptidao == 0) { 
-            System.out.println("Caminho: " + cromossomo.getGenes());
+            // System.out.println("Caminho: " + cromossomo.getGenes());
             System.out.println("Aptidão: " + cromossomo.aptidao);
-            System.out.println("Acho o CAMINHO"); 
+            String path = "Path: ";
+            for(int i = 0; i < cromossomo.path.size(); i++) {
+
+                path += "(" + cromossomo.path.get(i).x + "," + cromossomo.path.get(i).y + ") ";                
+            }
+            System.out.println("Achou o caminho!!!!"); 
+            System.out.println(path);
+            
+
+            int cont = 0;
+            for (Path obj : cromossomo.path) {
+                cont++;
+                if(cromossomo.path.size() == cont ) break;
+                labirinto.getCampo()[obj.x][obj.y] = ANSI_RED + "$" + ANSI_RESET;             
+            }
+
+
+
+            labirinto.imprimeLabirinto();
+            this.terminou = true;
             System.exit(0);
             
         }
@@ -237,8 +259,9 @@ public class Ag {
             }
         }
         
-        System.out.println("Aptidão " + melhorAptidao.aptidao);
+        System.out.println("Aptidão :" + melhorAptidao.aptidao);
         melhorAptidao.aptidao = 0;
+        melhorAptidao.path = new ArrayList<Path>();
         System.out.println("Melhor cromossomo " + melhorAptidao.toString());
         this.individuosIntermediario.add(melhorAptidao);
     }

@@ -9,18 +9,15 @@ public class Inicio {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         System.out.println("Por favor identifique o nome do labirinto que se encontra na pasta /labirintos/ :");
-        String nomeLabirinto = "labirinto4_20" ; //sc.nextLine();
+        String nomeLabirinto = sc.nextLine();
 
         String [][] lab = LeitorDeArquivo.lerArquivo(nomeLabirinto);
         Labirinto labirinto = new Labirinto(lab);
         Ag algoritmoAG = new Ag();
         // labirinto.imprimeLabirinto();
         
-            algoritmoAG.aplicarAG(labirinto);
-   
-        
-        
-        /*
+        algoritmoAG.aplicarAG(labirinto);  
+
         labirinto = new Labirinto(leLabirinto.lerArquivo(nomeLabirinto));
         labirinto.imprimeLabirinto();
 
@@ -59,6 +56,6 @@ public class Inicio {
         astar.displayResultado();
 
         sc.close();
-*/
+
     }
 }
