@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class AStar {
@@ -154,31 +155,61 @@ public class AStar {
         }
         System.out.println();
     }
-
+   
     public void displayResultado() {
         if(nodosFechados[fimI][fimJ]) {
             System.out.println("Path: ");
             Nodo atual = grid[fimI][fimJ];
+            Nodo ultimo = atual;
             System.out.println(atual);
             grid[atual.i][atual.j].solucao = true;
 
+            ArrayList<Nodo> nodoPath = new ArrayList<Nodo>();
+
             while(atual.proximo != null) {
                 System.out.println(" -> " + atual.proximo);
+                nodoPath.add(atual.proximo);
                 grid[atual.proximo.i][atual.proximo.j].solucao = true;
                 atual = atual.proximo;
             }
-            System.out.println("\n");
-
+            String path = "Path: ";
+            for(int i = nodoPath.size() - 1; i >= 0; i--) {
+                path = path + nodoPath.get(i) + " ";
+                // System.out.println(nodoPath.get(i) + " ");
+            }
+            System.out.println(path + " " + ultimo + "\n");
+            String lab = "";
             for(int i = 0; i < grid.length; i++) {
                 for(int j = 0; j < grid[i].length; j++) {
-                    if(i==inicioI && j==inicioJ) System.out.print("E  ");
-                    else if(i == fimI && j == fimJ) System.out.print("S  ");
-                    else if(grid[i][j] != null) System.out.printf("%-3s", grid[i][j].solucao ? "X" : "0");
-                    else System.out.print("1  ");
+                    if(i==inicioI && j==inicioJ) {
+                        System.out.print("E  ");
+                        lab += "E  ";
+                    }
+                    else if(i == fimI && j == fimJ) {
+                        System.out.print("S  ");
+                        lab += "S  ";
+                    }
+                    else if(grid[i][j] != null) {
+                        System.out.printf("%-3s", grid[i][j].solucao ? "X" : "0");
+                        String solucao = grid[i][j].solucao ? "X" : "0";
+                        lab += solucao + "  ";
+                    }
+                    else {
+                        System.out.print("1  ");
+                        lab += "1  ";
+                    }
                  }
                  System.out.println();
+                 lab += "\n";
             }
+            EscritaDeArquivo arquivo = new EscritaDeArquivo();
+            try {
+                arquivo.escreve(path + "" + ultimo + "\n" + lab, "AStar.txt");
+            } catch (Exception e) {
+                System.out.println("Ops deu erro na escrita do arquivo!");
+            }
+            
             System.out.println();
         } else System.out.println("não há nenhum caminho possível");
-    }    
+    }  
 }

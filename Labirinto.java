@@ -4,15 +4,19 @@ public class Labirinto {
     public Labirinto(String[][] campo) {
         this.campo = campo;
     }
-    public static void imprimeLabirinto() {
+
+    public static String imprimeLabirinto() {
+        String labirinto = "";
         for(int i = 0; i < campo.length; i++) {
             String line = "";
             for(int j = 0; j < campo[i].length; j++) {
                 line = line + campo[i][j] + " ";
             }
-            System.out.println(line);
+            labirinto = labirinto + line + "\n";
         }
+        return labirinto;
     }
+
     public int getTamLabirinto(){
         return campo[0].length;
     }

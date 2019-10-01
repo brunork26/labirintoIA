@@ -95,21 +95,23 @@ public class Ag {
             }
             System.out.println("Achou o caminho!!!!"); 
             System.out.println(path);
-            
-
             int cont = 0;
             for (Path obj : cromossomo.path) {
                 cont++;
                 if(cromossomo.path.size() == cont ) break;
-                labirinto.getCampo()[obj.x][obj.y] = ANSI_RED + "$" + ANSI_RESET;             
+                //labirinto.getCampo()[obj.x][obj.y] = ANSI_RED + "$" + ANSI_RESET;    
+                labirinto.getCampo()[obj.x][obj.y] = "$";          
             }
-
-
-
-            labirinto.imprimeLabirinto();
+            System.out.println(labirinto.imprimeLabirinto());
             this.terminou = true;
-            System.exit(0);
+            EscritaDeArquivo arquivo = new EscritaDeArquivo();
+            try {
+                arquivo.escreve(path + "\n" + labirinto.imprimeLabirinto(), "AlgoritmoGenetico.txt");
+            } catch (Exception e) { 
+                System.out.println("Ops não conseguiu criar o arquivo");
+            }
             
+            System.exit(0);        
         }
         if(campo[xPos][yPos].equals("S")) return true;
         return false;

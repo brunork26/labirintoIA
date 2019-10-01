@@ -16,10 +16,7 @@ public class Inicio {
         Ag algoritmoAG = new Ag();
         // labirinto.imprimeLabirinto();
         
-        algoritmoAG.aplicarAG(labirinto);  
-
-        labirinto = new Labirinto(leLabirinto.lerArquivo(nomeLabirinto));
-        labirinto.imprimeLabirinto();
+        
 
         
         String[][] campo = labirinto.getCampo();
@@ -55,6 +52,11 @@ public class Inicio {
         // astar.displayPontos();
         astar.displayResultado();
 
+
+        algoritmoAG.aplicarAG(labirinto);  
+
+        // labirinto = new Labirinto(leLabirinto.lerArquivo(nomeLabirinto));
+        // labirinto.imprimeLabirinto();
         sc.close();
 
     }
