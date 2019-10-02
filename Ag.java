@@ -13,10 +13,18 @@ public class Ag {
     public static int populacao = 1000;
     public boolean terminou = false;
     public int mutacao = 0;
+    public int tamanhoCromossomo = 0;
+    public Labirinto labirintoEv;
+    public String nomeLab = "";
+
+    public int contConvergencia = 0;
+    public int aptConvergencia = 0;
+    public int confirmaValorConvergencia = 0;
  
     public Ag(){};
 
-    public void aplicarAG(Labirinto labirinto, int valMut, int populacao){
+    public void aplicarAG(Labirinto labirinto, int valMut, int populacao, String nomeLabirinto){
+        this.nomeLab = nomeLabirinto;
         int cont = 0;
         this.populacao = populacao;
         this.labirinto = labirinto;
@@ -53,6 +61,7 @@ public class Ag {
         Random gerador = new Random();
         int gene;
         System.out.println(tam);
+        this.tamanhoCromossomo = tam;
         int tamCromossomo = tam; // talvez passar por parâmetro
 
         for(int i = 0; i < this.populacao; i++) {
@@ -92,12 +101,14 @@ public class Ag {
 
     public boolean validaSolucao(int xPos, int yPos, Cromossomo cromossomo) {
         String[][] campo = labirinto.getCampo();
+        this.labirintoEv = labirinto;
         if(campo[xPos][yPos].equals("S") && cromossomo.aptidao == 0) { 
-            // System.out.println("Caminho: " + cromossomo.getGenes());
-            System.out.println("Aptidão: " + cromossomo.aptidao);
+            this.evolucaoAg(cromossomo.path, cromossomo);
+             System.out.println("Caminho: " + cromossomo.getGenes());
+            //System.out.println("Aptidão: " + cromossomo.aptidao);
             String path = "Path: ";
+            
             for(int i = 0; i < cromossomo.path.size(); i++) {
-
                 path += "(" + cromossomo.path.get(i).x + "," + cromossomo.path.get(i).y + ") ";                
             }
             System.out.println("Achou o caminho!!!!"); 
@@ -257,22 +268,63 @@ public class Ag {
             //}        
         }
     }
-
+    public int min = Integer.MAX_VALUE;
+    public Cromossomo melhorAptidao = null;
     public void aplicarSelecaoCBF() {
-        int min = Integer.MAX_VALUE;
-        Cromossomo melhorAptidao = null;
+              
+        // Cromossomo segundoMelhor = null;
+        // Cromossomo[] arrayCromosomo = new Cromossomo[8];
+        int index = 0;
+        
         for (Cromossomo cromossomo : this.individuos) {
-            if(min > cromossomo.aptidao) {
-                min = cromossomo.aptidao;
-                melhorAptidao = cromossomo;
+            index++;
+            if(this.min > cromossomo.aptidao) {
+                // segundoMelhor = this.individuos.get(index - 1);
+                // segundoMelhor = melhorAptidao;
+                
+                if(this.aptConvergencia > cromossomo.aptidao) {
+                    System.out.println("CONVERGENCIA");
+                    System.out.println(this.aptConvergencia);
+                    System.out.println(cromossomo.aptidao);
+                    this.contConvergencia = 0;
+                }            
+                this.min = cromossomo.aptidao;
+                this.aptConvergencia = cromossomo.aptidao;
+                this.melhorAptidao = cromossomo;
+                
             }
         }
+
+        if(this.melhorAptidao != null) {
+            
+            this.melhorAptidao.aptidao = 0;
+            this.melhorAptidao.path = new ArrayList<Path>();
+            this.individuosIntermediario.add(this.melhorAptidao);
+        }
+        System.out.println("Aptidão :" + this.aptConvergencia);
         
-        System.out.println("Aptidão :" + melhorAptidao.aptidao);
-        melhorAptidao.aptidao = 0;
-        melhorAptidao.path = new ArrayList<Path>();
-        System.out.println("Melhor cromossomo " + melhorAptidao.toString());
-        this.individuosIntermediario.add(melhorAptidao);
+         //System.out.println("Melhor cromossomo " + melhorAptidao.toString());
+        
+        // this.individuosIntermediario.add(segundoMelhor);
+        this.contConvergencia++;
+        System.out.println(this.contConvergencia);
+        
+        if(this.contConvergencia == 250 && this.aptConvergencia == this.min) {
+            this.contConvergencia = 0;
+            Random gerador = new Random();
+            int gene;
+            for(int i = 0; i < this.populacao; i++) {
+                Cromossomo cromossomo = new Cromossomo();
+                for(int j = 0; j < this.tamanhoCromossomo; j++) { 
+                    gene = gerador.nextInt(7) + 1; // garante de 1 até 8
+                    cromossomo.addGene(gene);
+                }
+                this.individuosIntermediario.add(cromossomo);
+            }   
+            this.aptConvergencia = 0;
+            this.min = Integer.MAX_VALUE;
+        }
+        this.melhorAptidao = null;
     }
 
     public void aplicarBrasileirao() {
@@ -388,5 +440,35 @@ public class Ag {
 
         wolverine.getGenes().set(nGene, vGene);
         this.individuosIntermediario.add(wolverine);
+    }
+
+
+    public void evolucaoAg(ArrayList<Path> path, Cromossomo cromossomo) {
+        // String[][] campo = this.labirinto.getCampo();
+        Labirinto lab = this.labirintoEv;
+        // ArrayList<Path> caminho = path
+        String saida = "Cromossomo: " + cromossomo.toString();
+
+        System.out.println("Cromossomo: " + cromossomo.toString() + "\n");
+
+        for (int i = 0; i < path.size(); i++) {
+            lab.getCampo()[path.get(i).x][path.get(i).y] = "$";
+            saida = saida + "Ponto: (" + path.get(i).x + "," + path.get(i).y + "):" + "\n" + lab.imprimeLabirinto();
+            System.out.println("Ponto: (" + path.get(i).x + "," + path.get(i).y + "):" );
+            System.out.println(lab.imprimeLabirinto());
+        }
+
+
+        EscritaDeArquivo arquivo = new EscritaDeArquivo();
+            try {
+                arquivo.escreve(saida, this.nomeLab + ".txt");
+            } catch (Exception e) { 
+                System.out.println("Ops não conseguiu criar o arquivo");
+            }
+        // for(int i = 0; i < campo.length; i++) {
+        //     for(int j = 0; j < campo[i].length; j++) {
+
+        //     }
+        // }
     }
 }

@@ -59,7 +59,7 @@ public class Inicio {
         astar.displayResultado();
 
 
-        algoritmoAG.aplicarAG(labirinto, valMut, tamPopulacao);  
+        algoritmoAG.aplicarAG(labirinto, valMut, tamPopulacao, nomeLabirinto);  
 
         // labirinto = new Labirinto(leLabirinto.lerArquivo(nomeLabirinto));
         // labirinto.imprimeLabirinto();
