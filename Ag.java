@@ -162,22 +162,8 @@ public class Ag {
                         cromossomo.atualizaPosicao(xPos, yPos);
                     } 
                 }
-                // movimenta para diagonal direita cima
-                if(gene == 2) {
-                    xPos = cromossomo.x - 1;
-                    yPos = cromossomo.y + 1;
-                    if(xPos < 0 || yPos > labirinto.getTamLabirinto() - 1) {
-                        cromossomo.aptidao += 100;
-                    } else {
-                        this.validaAptidao(xPos, yPos, cromossomo);
-                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
-                            break;
-                        } 
-                        cromossomo.atualizaPosicao(xPos, yPos);
-                    }
-                }
                 // movimenta para direita
-                if(gene == 3) {
+                if(gene == 2) {
                     xPos = cromossomo.x;
                     yPos = cromossomo.y + 1;
                     if(yPos > labirinto.getTamLabirinto() - 1) {
@@ -190,22 +176,8 @@ public class Ag {
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
                 }
-                // movimenta para diagonal direita baixo
-                if(gene == 4) {
-                    xPos = cromossomo.x + 1;
-                    yPos = cromossomo.y + 1;
-                    if(xPos > labirinto.getTamLabirinto() - 1 || yPos > labirinto.getTamLabirinto() - 1) {
-                        cromossomo.aptidao += 100;
-                    } else {
-                        this.validaAptidao(xPos, yPos, cromossomo);
-                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
-                            break;
-                        } 
-                        cromossomo.atualizaPosicao(xPos, yPos);
-                    }
-                }
                 // movimenta para baixo
-                if(gene == 5) {
+                if(gene == 3) {
                     xPos = cromossomo.x + 1;
                     yPos = cromossomo.y;
                     if(xPos > labirinto.getTamLabirinto() - 1) {
@@ -218,23 +190,8 @@ public class Ag {
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
                 }
-                // movimenta para diagonal esquerda baixo
-                if(gene == 6) {
-                    xPos = cromossomo.x + 1;
-                    yPos = cromossomo.y - 1;
-                    if(xPos > labirinto.getTamLabirinto() - 1 || yPos < 0) {
-                        cromossomo.aptidao += 100;
-                    } else {
-                        this.validaAptidao(xPos, yPos, cromossomo);
-                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
-                            break;
-                        } 
-                        cromossomo.atualizaPosicao(xPos, yPos);
-                    }
-                }
-
                 // movimenta para esquerda
-                if(gene == 7) {
+                if(gene == 4) {
                     xPos = cromossomo.x;
                     yPos = cromossomo.y - 1;
                     if(yPos < 0) {
@@ -246,22 +203,7 @@ public class Ag {
                         } 
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
-                }
-                // movimenta para diagonal esquerda cima
-                if(gene == 8) {
-                    xPos = cromossomo.x - 1;
-                    yPos = cromossomo.y - 1;
-                    if(xPos < 0 || yPos < 0) {
-                        cromossomo.aptidao += 100;
-                    } else {
-                        this.validaAptidao(xPos, yPos, cromossomo);
-                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
-                            break;
-                        } 
-                        cromossomo.atualizaPosicao(xPos, yPos);
-                    }
-                }
-                     
+                }                    
             }
             // if(cromossomo.aptidao < 30) {
                 //System.out.println("Cromossomo: " + index + " Aptidão: " + cromossomo.aptidao + "\n");

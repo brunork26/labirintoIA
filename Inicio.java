@@ -21,10 +21,7 @@ public class Inicio {
         Labirinto labirinto = new Labirinto(lab);
         Ag algoritmoAG = new Ag();
         // labirinto.imprimeLabirinto();
-        
-        
-
-        
+     
         String[][] campo = labirinto.getCampo();
             
         int posicaoInicialI = 0;

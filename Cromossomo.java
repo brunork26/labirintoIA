@@ -5,6 +5,7 @@ public class Cromossomo {
     private ArrayList<Integer> genes = new ArrayList<Integer>();
     public ArrayList<Path> path = new ArrayList<Path>();
     public int aptidao = 0;
+    public int moedas = 0;
     public int x = 0;
     public int y = 0;
     
