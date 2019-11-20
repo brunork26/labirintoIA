@@ -10,6 +10,7 @@ then
     javac Cromossomo.java
     javac Path.java
     javac EscritaDeArquivo.java
+    javac RedeNeural.java
     echo "Iniciando projeto"
     java Inicio 
 else
@@ -28,6 +29,7 @@ else
             javac Cromossomo.java
             javac Path.java
             javac EscritaDeArquivo.java
+            javac RedeNeural.java
             echo "Projeto Compilado."
     fi
 fi

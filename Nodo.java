@@ -1,3 +1,4 @@
+/** Usado no AStar */
 public class Nodo {
     public int i, j;
     public Nodo proximo;

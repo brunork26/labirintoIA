@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.math.*;
 
 public class Ag {
-    // static int [][] individuos;
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     private ArrayList<Cromossomo> individuos = new ArrayList<Cromossomo>();
@@ -10,7 +10,7 @@ public class Ag {
     public Labirinto labirinto = null;
     public int contZero;
     public int geracao = 0;
-    public static int populacao = 1000;
+    public static int populacao = 100;
     public boolean terminou = false;
     public int mutacao = 0;
     public int tamanhoCromossomo = 0;
@@ -30,14 +30,9 @@ public class Ag {
         this.labirinto = labirinto;
         System.out.println("\n Iniciando Algoritmo Genético...\n");
         criarPopulacaoInicial(this.labirinto.qtdCamposLivres(), valMut);
-        // imprimeMatrizPopulacao();
+        /*
         while(cont < 1000000 ) {
             System.out.println("\n GERAÇÃO : " + cont );
-            for(int i = 0; i < this.individuos.size(); i++) {
-                //this.individuos.get(i).aptidao = 0;
-                 //System.out.println("Aptidão: " + this.individuos.get(i).aptidao);
-                 
-            }
             aplicarAptidao();
             aplicarSelecaoCBF();
             aplicarBrasileirao();
@@ -45,35 +40,66 @@ public class Ag {
             while(c < this.mutacao) {
                 c++;
                 aplicarXmen();
-            }
-            
-            //this.individuos = null; 
+            }        
             this.individuos = this.individuosIntermediario;
             this.individuosIntermediario = new ArrayList<Cromossomo>();
-            //aplicarXmen();
             cont++;
-        }
+        }*/
 
     }
+
+    public double sigmoid(double x) {
+        Random gerador = new Random();
+        int sinal = gerador.nextInt(2);
+        // System.out.println(sinal);
+        if(sinal == 0) {
+            sinal = 1;
+        } else {
+            sinal = -1;
+        }
+        x = x * sinal;
+        return 1 / (1 + Math.exp(-x));
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+    
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
+    /**Transforma valores entre 1 a 100 em um intervalo de 0 a 1 */
+    public static double rand() {
+        double min = 1;
+        double max = 100;
+        Random gerador = new Random();
+        //double random = Double.valueOf((gerador.nextInt(100)+1)/100.0);
+        double resposta = ((gerador.nextInt(100)+1) - min) / (max - min);
+        return round(resposta, 2);
+    }
+
     // Como campo é quadrático, a populacao inicial vai ser de 10 individuos com 100 cromossomos
     public void criarPopulacaoInicial(int tam, int valMut){
         System.out.println("\nCriando Populacao Inicial...\n");
         Random gerador = new Random();
-        int gene;
+        double gene;
         System.out.println(tam);
         this.tamanhoCromossomo = tam;
         int tamCromossomo = tam; // talvez passar por parâmetro
 
-        for(int i = 0; i < this.populacao; i++) {
+        for(int i = 0; i < populacao; i++) {
             Cromossomo cromossomo = new Cromossomo();
-            for(int j = 0; j < tamCromossomo; j++) { 
-                gene = gerador.nextInt(7) + 1; // garante de 1 até 8
+            for(int j = 0; j < tamCromossomo; j++) {            
+                // gene = round(this.sigmoid((gerador.nextInt(5) + 1)), 2); // garante de 1 até 5
+                gene = rand(); // (gerador.nextInt(100)+1)/100.0;
                 cromossomo.addGene(gene);
             }
             this.individuos.add(cromossomo);
+            System.out.println(cromossomo.toString());
         }
 
-        this.mutacao = ((tam*this.populacao)*valMut)/100;
+        this.mutacao = ((tam * populacao)*valMut)/100;
 
         System.out.println("mutacao: " + this.mutacao);
 
@@ -91,10 +117,8 @@ public class Ag {
 
     public void validaAptidao(int xPos, int yPos, Cromossomo cromossomo) {
         String[][] campo = labirinto.getCampo();
-        //System.out.println(xPos + " " + yPos);
         cromossomo.path.add(new Path(xPos, yPos));
         if(campo[xPos][yPos].equals("1")) {
-            // System.out.println("Bateu parede");
             cromossomo.aptidao += 1;
         }
     }
@@ -134,7 +158,7 @@ public class Ag {
         if(campo[xPos][yPos].equals("S")) return true;
         return false;
     }
-
+    /** Deve ser feito aqui o algoritmo de redes neurais */
     public void aplicarAptidao(){
         String[][] campo = labirinto.getCampo();
         int index = 0;
@@ -146,7 +170,7 @@ public class Ag {
             cromossomo.x = 0;
             cromossomo.y = 0;     
             //System.out.println(cromossomo.toString());
-            for (Integer gene : cromossomo.getGenes()) {
+            for (Double gene : cromossomo.getGenes()) {
                 // movimenta para cima
                 if(gene == 1) {
                     xPos = cromossomo.x - 1;
@@ -204,26 +228,17 @@ public class Ag {
                         cromossomo.atualizaPosicao(xPos, yPos);
                     }
                 }                    
-            }
-            // if(cromossomo.aptidao < 30) {
-                //System.out.println("Cromossomo: " + index + " Aptidão: " + cromossomo.aptidao + "\n");
-            //}        
+            }       
         }
     }
     public int min = Integer.MAX_VALUE;
     public Cromossomo melhorAptidao = null;
     public void aplicarSelecaoCBF() {
-              
-        // Cromossomo segundoMelhor = null;
-        // Cromossomo[] arrayCromosomo = new Cromossomo[8];
         int index = 0;
         
         for (Cromossomo cromossomo : this.individuos) {
             index++;
             if(this.min > cromossomo.aptidao) {
-                // segundoMelhor = this.individuos.get(index - 1);
-                // segundoMelhor = melhorAptidao;
-                
                 if(this.aptConvergencia > cromossomo.aptidao) {
                     System.out.println("CONVERGENCIA");
                     System.out.println(this.aptConvergencia);
@@ -238,27 +253,22 @@ public class Ag {
         }
 
         if(this.melhorAptidao != null) {
-            
             this.melhorAptidao.aptidao = 0;
             this.melhorAptidao.path = new ArrayList<Path>();
             this.individuosIntermediario.add(this.melhorAptidao);
         }
         System.out.println("Aptidão :" + this.aptConvergencia);
-        
-         //System.out.println("Melhor cromossomo " + melhorAptidao.toString());
-        
-        // this.individuosIntermediario.add(segundoMelhor);
         this.contConvergencia++;
         System.out.println(this.contConvergencia);
         
         if(this.contConvergencia == 250 && this.aptConvergencia == this.min) {
             this.contConvergencia = 0;
             Random gerador = new Random();
-            int gene;
+            double gene;
             for(int i = 0; i < this.populacao; i++) {
                 Cromossomo cromossomo = new Cromossomo();
                 for(int j = 0; j < this.tamanhoCromossomo; j++) { 
-                    gene = gerador.nextInt(7) + 1; // garante de 1 até 8
+                    gene = rand(); //gerador.nextInt(7) + 1; // garante de 1 até 8
                     cromossomo.addGene(gene);
                 }
                 this.individuosIntermediario.add(cromossomo);
@@ -271,13 +281,8 @@ public class Ag {
 
     public void aplicarBrasileirao() {
         Random index = new Random();
-        // Cromossomo pai = null;
-        // Cromossomo mae = null;
-        // Cromossomo torneio1 = null;
-        // Cromossomo torneio2 = null;
         int contTest = 0;
         while(populacao > this.individuosIntermediario.size()) {
-        //while(contTest < 3) {
             Cromossomo pai = null;
             Cromossomo mae = null;
             Cromossomo torneio1 = null;
@@ -291,14 +296,11 @@ public class Ag {
             while(torneio1.equals(torneio2)) {
                 torneio2 = this.individuos.get(index.nextInt(this.individuos.size()));
             }
-            // System.out.println("primeiro: " + torneio1.aptidao);
-            //System.out.println("segundo: " + torneio2.aptidao);
 
             if(torneio1.aptidao < torneio2.aptidao) {
                 pai = torneio1;
             } else pai = torneio2;
 
-            //System.out.println("pai: " + pai.aptidao);
 
             torneio1 = this.individuos.get(index.nextInt(this.individuos.size()));
             torneio2 = this.individuos.get(index.nextInt(this.individuos.size()));
@@ -309,10 +311,6 @@ public class Ag {
             if(torneio1.aptidao < torneio2.aptidao) {
                 mae = torneio1;
             } else mae = torneio2;
-            // System.out.println("primeiro: " + torneio1.aptidao);
-            // System.out.println("segundo: " + torneio2.aptidao);
-
-            // System.out.println("mae: " + mae.aptidao);
 
             // cruzamento 
             Random pontos = new Random();
@@ -335,10 +333,6 @@ public class Ag {
             // 0 --- ponto1
             // ponto1 + 1 --- ponto2
             // ponto2 + 1 --- fim se existir
-            // System.out.println("Pai: " + pai.getGenes());
-            // System.out.println("Mae: " + mae.getGenes());
-            // System.out.println("Ponto1: " + pontos1);
-            // System.out.println("Ponto2: " + pontos2);
             for(int i = 0; i < pontos1; i++) {
                 filho.addGene(pai.getGenes().get(i));
                 filha.addGene(mae.getGenes().get(i));
@@ -351,9 +345,6 @@ public class Ag {
                 filho.addGene(pai.getGenes().get(i));
                 filha.addGene(mae.getGenes().get(i));
             }
-            
-            // System.out.println("Filho: " + filho.getGenes());
-            // System.out.println("Filha: " + filha.getGenes());
 
             this.individuosIntermediario.add(filho);
             this.individuosIntermediario.add(filha);
@@ -361,10 +352,6 @@ public class Ag {
         }
         
         this.individuosIntermediario.remove(this.individuosIntermediario.size() - 1);
-
-        // for(int i = 0; i < this.individuosIntermediario.size(); i++) {
-        //     System.out.println(this.individuosIntermediario.get(i) + "\n");
-        // }
     }
 
     public void aplicarXmen() {
@@ -372,13 +359,13 @@ public class Ag {
         int i = index.nextInt(this.individuosIntermediario.size());
         Cromossomo wolverine = this.individuosIntermediario.get(i);
         this.individuosIntermediario.remove(i);
-        //System.out.println(wolverine.toString());
 
         Random escolheGene = new Random();
         int nGene = escolheGene.nextInt(this.labirinto.qtdCamposLivres());
 
         Random valorGene = new Random();
-        int vGene = valorGene.nextInt(7) + 1;
+        // double vGene = this.sigmoid(valorGene.nextInt(7) + 1);
+        double vGene = rand();
 
         wolverine.getGenes().set(nGene, vGene);
         this.individuosIntermediario.add(wolverine);
@@ -386,9 +373,7 @@ public class Ag {
 
 
     public void evolucaoAg(ArrayList<Path> path, Cromossomo cromossomo) {
-        // String[][] campo = this.labirinto.getCampo();
         Labirinto lab = this.labirintoEv;
-        // ArrayList<Path> caminho = path
         String saida = "Cromossomo: " + cromossomo.toString();
 
         System.out.println("Cromossomo: " + cromossomo.toString() + "\n");
@@ -400,17 +385,12 @@ public class Ag {
             System.out.println(lab.imprimeLabirinto());
         }
 
-
         EscritaDeArquivo arquivo = new EscritaDeArquivo();
-            try {
-                arquivo.escreve(saida, this.nomeLab + ".txt");
-            } catch (Exception e) { 
-                System.out.println("Ops não conseguiu criar o arquivo");
-            }
-        // for(int i = 0; i < campo.length; i++) {
-        //     for(int j = 0; j < campo[i].length; j++) {
+        try {
+            arquivo.escreve(saida, this.nomeLab + ".txt");
+        } catch (Exception e) { 
+            System.out.println("Ops não conseguiu criar o arquivo");
+        }
 
-        //     }
-        // }
     }
 }

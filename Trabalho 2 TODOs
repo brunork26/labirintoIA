@@ -1,0 +1,37 @@
+
+
+-> Objetivo
+    - Encontrar o máximo de moedas
+    - Encontrar a saída
+
+-> Labirinto
+    - 0: Caminhos
+    - 1: Paredes
+    - M: moedas (adicionar)
+
+-> Agente
+    - Remover movimento nas diagonais
+    - Percepção de duas casas em sua frente
+    - Não enxerga através das paredes
+    - Deve recolher a moeda na célula (caso M moeda, caso 0 nada, caso 1 penalizado)
+    - Não sabe posição das moedas.
+    - Sabe onde está a saida
+    - Quantidade de moedas coletadas
+
+-> Moedas
+    - Cada posição possui 50 moedas
+
+-> Pontuação
+    - Quantidade de moedas
+    - Distância que está da saída
+    - Colisão dá endgame
+
+-> Função aptidão (Deverá ser alterada)
+    - Caminhos com mais pontos
+    - Menor ou não, contar passos
+    - Menor distância e maior quantidade de moedas coletadas
+    - Se bateu na parede zera
+
+-> Entradas da rede
+    - Dados dos vizinhos
+        - Seus valores em distância referentes a saida e se possuem moedas
