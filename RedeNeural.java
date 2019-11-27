@@ -49,22 +49,46 @@ class RedeNeural {
             }
         }
         // andar
-
+        double pontuacao = 0;
         switch(index) {
             case 0: {
-
+                pontuacao = this.verificaConteudo(x - 1, y);
             } break;
             case 1: {
-
+                pontuacao = this.verificaConteudo(x, y + 1);
             } break;
             case 2: {
-
+                pontuacao = this.verificaConteudo(x + 1, y);
             } break;
             case 3: {
-
+                pontuacao = this.verificaConteudo(x, y - 1);
             } break;
+            default: break;
         }
 
+    }
+
+    public double verificaConteudo(int x, int y) {
+        String conteudo = labirinto.getPos(x, y);
+        double pontuacao = 0;
+        switch(conteudo) {
+            case "M": 
+                // adiciona moeda e pontuacao de distancia e move agente
+                break;
+            case "0": 
+                // adiciona somente pontuacao de distancia e move agente
+                break;
+            case "1": 
+                //parede não move agente e retira cromossomo
+                return -1;
+            default: break;
+        }
+        return pontuacao;
+    }
+
+    public double manhattan(int x, int y) {
+        Path saida = labirinto.posSaida();
+        return Math.abs(saida.x - x) + Math.abs(saida.y - y);
     }
 
     public ArrayList<Double> criaCamada(ArrayList<Double> peso, 
