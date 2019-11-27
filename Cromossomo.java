@@ -8,6 +8,7 @@ public class Cromossomo {
     public int moedas = 0;
     public int x = 0;
     public int y = 0;
+    public double pontuacao = 0;
 
     /*Adiciona Gene ao cormossomo*/
     public void addGene(double gene) {

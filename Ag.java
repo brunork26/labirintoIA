@@ -16,6 +16,7 @@ public class Ag {
     public int tamanhoCromossomo = 0;
     public Labirinto labirintoEv;
     public String nomeLab = "";
+    private static RedeNeural redeNeural;
 
     public int contConvergencia = 0;
     public int aptConvergencia = 0;
@@ -28,23 +29,24 @@ public class Ag {
         int cont = 0;
         this.populacao = populacao;
         this.labirinto = labirinto;
+        redeNeural = new RedeNeural(labirinto);
         System.out.println("\n Iniciando Algoritmo Genético...\n");
         criarPopulacaoInicial(this.labirinto.qtdCamposLivres(), valMut);
-        /*
-        while(cont < 1000000 ) {
+        
+        while(cont < 1 ) {
             System.out.println("\n GERAÇÃO : " + cont );
             aplicarAptidao();
-            aplicarSelecaoCBF();
+            /*aplicarSelecaoCBF();
             aplicarBrasileirao();
             int c = 0;
             while(c < this.mutacao) {
                 c++;
                 aplicarXmen();
-            }        
+            }  */      
             this.individuos = this.individuosIntermediario;
             this.individuosIntermediario = new ArrayList<Cromossomo>();
             cont++;
-        }*/
+        }
 
     }
 
@@ -61,13 +63,7 @@ public class Ag {
         return 1 / (1 + Math.exp(-x));
     }
 
-    public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
-    
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
-    }
+   
 
     /**Transforma valores entre 1 a 100 em um intervalo de 0 a 1 */
     public static double rand() {
@@ -76,7 +72,8 @@ public class Ag {
         Random gerador = new Random();
         //double random = Double.valueOf((gerador.nextInt(100)+1)/100.0);
         double resposta = ((gerador.nextInt(100)+1) - min) / (max - min);
-        return round(resposta, 2);
+        Utils ar = new Utils();
+        return ar.round(resposta, 2);
     }
 
     // Como campo é quadrático, a populacao inicial vai ser de 10 individuos com 100 cromossomos
@@ -164,73 +161,13 @@ public class Ag {
         int index = 0;
         String caminho = "";
         for (Cromossomo cromossomo : this.individuos) {
-            index++; 
-            int xPos = 0; // novaPosicao
-            int yPos = 0; // novaPosicao
-            cromossomo.x = 0;
-            cromossomo.y = 0;     
+            index++;    
             //System.out.println(cromossomo.toString());
-            for (Double gene : cromossomo.getGenes()) {
-                // movimenta para cima
-                if(gene == 1) {
-                    xPos = cromossomo.x - 1;
-                    yPos = cromossomo.y;
-                    // sai labirinto topo ou baixo
-                    if(xPos < 0 || xPos > labirinto.getTamLabirinto() - 1) {
-                        cromossomo.aptidao += 100;
-                    } else {
-                        this.validaAptidao(xPos, yPos, cromossomo);
-                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
-                            break;
-                        }                      
-                        cromossomo.atualizaPosicao(xPos, yPos);
-                    } 
-                }
-                // movimenta para direita
-                if(gene == 2) {
-                    xPos = cromossomo.x;
-                    yPos = cromossomo.y + 1;
-                    if(yPos > labirinto.getTamLabirinto() - 1) {
-                        cromossomo.aptidao += 100;
-                    } else {
-                        this.validaAptidao(xPos, yPos, cromossomo);
-                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
-                            break;
-                        } 
-                        cromossomo.atualizaPosicao(xPos, yPos);
-                    }
-                }
-                // movimenta para baixo
-                if(gene == 3) {
-                    xPos = cromossomo.x + 1;
-                    yPos = cromossomo.y;
-                    if(xPos > labirinto.getTamLabirinto() - 1) {
-                        cromossomo.aptidao += 100;
-                    } else {
-                        this.validaAptidao(xPos, yPos, cromossomo);
-                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
-                            break;
-                        } 
-                        cromossomo.atualizaPosicao(xPos, yPos);
-                    }
-                }
-                // movimenta para esquerda
-                if(gene == 4) {
-                    xPos = cromossomo.x;
-                    yPos = cromossomo.y - 1;
-                    if(yPos < 0) {
-                        cromossomo.aptidao += 100;
-                    } else {
-                        this.validaAptidao(xPos, yPos, cromossomo);
-                        if(this.validaSolucao(xPos, yPos, cromossomo)) {
-                            break;
-                        } 
-                        cromossomo.atualizaPosicao(xPos, yPos);
-                    }
-                }                    
-            }       
+            redeNeural.aptidao(cromossomo);          
         }
     }
+
+
     public int min = Integer.MAX_VALUE;
     public Cromossomo melhorAptidao = null;
     public void aplicarSelecaoCBF() {

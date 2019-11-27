@@ -24,7 +24,7 @@ public class Inicio {
      
         String[][] campo = labirinto.getCampo();
             
-        int posicaoInicialI = 0;
+        /*int posicaoInicialI = 0;
         int posicaoInicialJ = 0;
         int posicaoFinalI = 0;
         int posicaoFinalJ = 0;
@@ -53,7 +53,7 @@ public class Inicio {
         astar.display();
         astar.processo(); // aplica o A*
         // astar.displayPontos();
-        astar.displayResultado();
+        astar.displayResultado();*/
 
 
         algoritmoAG.aplicarAG(labirinto, valMut, tamPopulacao, nomeLabirinto);  

@@ -66,4 +66,8 @@ public class Labirinto {
         }
         return new Path(posX, posY);
     }
+
+    public String getPos(int x, int y) {
+        return campo[x][y];
+    }
 }
