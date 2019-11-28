@@ -203,7 +203,7 @@ public class Ag {
         
 
         Random escolheGene = new Random();
-        int nGene = escolheGene.nextInt(this.individuosIntermediario.size());
+        int nGene = escolheGene.nextInt(this.individuosIntermediario.get(i).getGenes().size() - 1);
 
         Random valorGene = new Random();
         // double vGene = this.sigmoid(valorGene.nextInt(7) + 1);
