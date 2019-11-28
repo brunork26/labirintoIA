@@ -33,7 +33,7 @@ public class Ag {
         System.out.println("\n Iniciando Algoritmo Genético...\n");
         criarPopulacaoInicial(this.labirinto.qtdCamposLivres(), valMut);
         
-        while(cont < 1 ) {
+        while(cont < 100 ) {
             System.out.println("\n GERAÇÃO : " + cont );
             aplicarAptidao();
             aplicarSelecaoCBF();
@@ -178,6 +178,7 @@ public class Ag {
         this.individuosIntermediario = melhores;
         for(int i = 0; i < this.individuosIntermediario.size(); i++) {
             System.out.println(i + ". Pontuação: " + this.individuosIntermediario.get(i).pontuacao);
+            System.out.println("" + this.individuosIntermediario.get(i).printPath());
         }
     }
 
@@ -199,7 +200,7 @@ public class Ag {
                 torneio2 = this.individuos.get(index.nextInt(this.individuos.size()));
             }
 
-            if(torneio1.aptidao < torneio2.aptidao) {
+            if(torneio1.pontuacao < torneio2.pontuacao) {
                 pai = torneio1;
             } else pai = torneio2;
 
@@ -210,49 +211,30 @@ public class Ag {
                 torneio2 = this.individuos.get(index.nextInt(this.individuos.size()));
             }
 
-            if(torneio1.aptidao < torneio2.aptidao) {
+            if(torneio1.pontuacao < torneio2.pontuacao) {
                 mae = torneio1;
             } else mae = torneio2;
 
             // cruzamento 
-            Random pontos = new Random();
-            int pontos1 = pontos.nextInt(labirinto.qtdCamposLivres());
-            int pontos2 = pontos.nextInt(labirinto.qtdCamposLivres());
-            while(pontos1 == pontos2 || 
-                        pontos1 == 0 || 
-                        pontos2 == 0 || 
-                        pontos1 == this.individuos.size() - 1 || 
-                        pontos2 == this.individuos.size() - 1) {
-                            pontos1 = pontos.nextInt(labirinto.qtdCamposLivres());
-                            pontos2 = pontos.nextInt(labirinto.qtdCamposLivres());
-            } 
-            int aux = pontos1;
-            // garante ponto 1 menor
-            if(pontos2 < pontos1) {
-                pontos1 = pontos2;
-                pontos2 = aux;  
-            }
-            // 0 --- ponto1
-            // ponto1 + 1 --- ponto2
-            // ponto2 + 1 --- fim se existir
-            for(int i = 0; i < pontos1; i++) {
-                filho.addGene(pai.getGenes().get(i));
-                filha.addGene(mae.getGenes().get(i));
-            }
-            for(int i = pontos1; i < pontos2; i++) {
-                filho.addGene(mae.getGenes().get(i));
-                filha.addGene(pai.getGenes().get(i));
-            }
-            for(int i = pontos2; i < labirinto.qtdCamposLivres(); i++) {
-                filho.addGene(pai.getGenes().get(i));
-                filha.addGene(mae.getGenes().get(i));
+            ArrayList<Integer> rands = new ArrayList<>();
+            for(int i = 0; i < this.individuos.size(); i++) {
+                Random rand = new Random();
+                rands.add(rand.nextInt(2));
             }
 
+            for(int i = 0; i < rands.size(); i++) {
+                if(rands.get(i) == 0) {
+                    filho.addGene(pai.getGenes().get(i));
+                    filha.addGene(mae.getGenes().get(i));
+                } else {
+                    filho.addGene(mae.getGenes().get(i));
+                    filha.addGene(pai.getGenes().get(i));
+                }
+            }
             this.individuosIntermediario.add(filho);
             this.individuosIntermediario.add(filha);
 
         }
-        
         this.individuosIntermediario.remove(this.individuosIntermediario.size() - 1);
     }
 

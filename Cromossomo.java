@@ -24,6 +24,17 @@ public class Cromossomo {
         this.x = x;
         this.y = y;
     }
+
+    public String printPath() {
+        String s = "";
+        for(int i = 0; i < this.path.size(); i++) {
+            s += "x: " + this.path.get(i).x + " y: " + this.path.get(i).y + " \n";
+        }
+        return s;
+    }
+
+
+
     /*Imprime cromossomo*/
     @Override
     public String toString() {

@@ -6,6 +6,7 @@ import java.util.Arrays;
 class RedeNeural {
     
     public static int bias = 1;
+    public static double menor = Double.MAX_VALUE;
     /** 1-> Cima
      *  2-> Direita
      *  3-> Baixo
@@ -26,6 +27,8 @@ class RedeNeural {
 
     public void aptidao(Cromossomo c) {
         this.cromossomo = c;
+        this.cromossomo.pontuacao = 0;
+        this.cromossomo.path = new ArrayList();
         this.enquanto = true;
         this.agente.x = 0;
         this.agente.y = 0;
@@ -111,7 +114,11 @@ class RedeNeural {
             // saiu para fora
             System.out.println("SAIU");
             this.enquanto = false;
-            pontuacao = this.manhattan(agente.x, agente.y) - 100;
+            if(this.manhattan(agente.x, agente.y) < menor){
+                menor = this.manhattan(agente.x, agente.y);
+                pontuacao = 30; 
+            }
+            pontuacao -= 100;
             return pontuacao;
         }
         String conteudo = labirinto.getPos(x, y);
@@ -136,9 +143,13 @@ class RedeNeural {
                 break;
             case "1": 
                 //parede não move agente e retira cromossomo
-                System.out.println("1");
+                System.out.println("SAIU");
                 this.enquanto = false;
-                pontuacao = this.manhattan(x, y) - 100;
+                if(this.manhattan(agente.x, agente.y) < menor){
+                    menor = this.manhattan(agente.x, agente.y);
+                    pontuacao = 30; 
+                }
+                pontuacao -= 100;
                 return pontuacao;
             default: System.out.println("E"); break;
         }
