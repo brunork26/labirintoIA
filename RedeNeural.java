@@ -46,20 +46,16 @@ class RedeNeural {
 
     public void fazEpoca() {
         // anda pelo cromossomo
-        ArrayList<Double> pesos = this.cromossomo.getGenes();
-        System.out.println("Tamanho = " + pesos.size());       
-        this.perceptron = this.criaCamada(pesos, this.direcoes, 0, 12);
-        System.out.println("Faz Perceptron = " + perceptron.toString() + "\n");     
+        ArrayList<Double> pesos = this.cromossomo.getGenes(); 
+        this.perceptron = this.criaCamada(pesos, this.direcoes, 0, 12); 
 
         // Faz funcão de ativação
         for(int j = 0; j < perceptron.size(); j++) {
             double value = this.ar.sigmoid(perceptron.get(j));
-            System.out.println("Valor de saída = " + value);
         }
 
         // cria a camada de saida
         this.proximaCamada = criaCamada(pesos, this.perceptron, 16, 28);
-        System.out.println("Camada seguinte = " + proximaCamada.toString() + "\n");
 
         // atualiza posição do agente
         agenteCaminha();

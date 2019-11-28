@@ -42,6 +42,8 @@ public class Cromossomo {
         for(int i = 0; i < genes.size(); i++) {
             toString = toString + genes.get(i) + "-";
         }
+        toString += this.pontuacao + "\n";
+        toString += this.printPath() + "\n";
         return toString + "\n";
     }
 }

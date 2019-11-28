@@ -38,11 +38,11 @@ public class Ag {
             aplicarAptidao();
             aplicarSelecaoCBF();
             aplicarBrasileirao();
-            // int c = 0;
-            // while(c < this.mutacao) {
-            //     c++;
-            //     aplicarXmen();
-            // }    
+            int c = 0;
+            while(c < this.mutacao) {
+                c++;
+                aplicarXmen();
+            }    
             this.individuos = this.individuosIntermediario;
             this.individuosIntermediario = new ArrayList<Cromossomo>();
             cont++;
@@ -103,49 +103,6 @@ public class Ag {
         }
     }
 
-    public void validaAptidao(int xPos, int yPos, Cromossomo cromossomo) {
-        String[][] campo = labirinto.getCampo();
-        cromossomo.path.add(new Path(xPos, yPos));
-        if(campo[xPos][yPos].equals("1")) {
-            cromossomo.aptidao += 1;
-        }
-    }
-
-    public boolean validaSolucao(int xPos, int yPos, Cromossomo cromossomo) {
-        String[][] campo = labirinto.getCampo();
-        this.labirintoEv = labirinto;
-        if(campo[xPos][yPos].equals("S") && cromossomo.aptidao == 0) { 
-            this.evolucaoAg(cromossomo.path, cromossomo);
-             System.out.println("Caminho: " + cromossomo.getGenes());
-            //System.out.println("Aptidão: " + cromossomo.aptidao);
-            String path = "Path: ";
-            
-            for(int i = 0; i < cromossomo.path.size(); i++) {
-                path += "(" + cromossomo.path.get(i).x + "," + cromossomo.path.get(i).y + ") ";                
-            }
-            System.out.println("Achou o caminho!!!!"); 
-            System.out.println(path);
-            int cont = 0;
-            for (Path obj : cromossomo.path) {
-                cont++;
-                if(cromossomo.path.size() == cont ) break;
-                //labirinto.getCampo()[obj.x][obj.y] = ANSI_RED + "$" + ANSI_RESET;    
-                labirinto.getCampo()[obj.x][obj.y] = "$";          
-            }
-            System.out.println(labirinto.imprimeLabirinto());
-            this.terminou = true;
-            EscritaDeArquivo arquivo = new EscritaDeArquivo();
-            try {
-                arquivo.escreve(path + "\n" + labirinto.imprimeLabirinto(), "AlgoritmoGenetico.txt");
-            } catch (Exception e) { 
-                System.out.println("Ops não conseguiu criar o arquivo");
-            }
-            
-            System.exit(0);        
-        }
-        if(campo[xPos][yPos].equals("S")) return true;
-        return false;
-    }
     /** Deve ser feito aqui o algoritmo de redes neurais */
     public void aplicarAptidao(){
         String[][] campo = labirinto.getCampo();
@@ -153,7 +110,7 @@ public class Ag {
         String caminho = "";
         for (Cromossomo cromossomo : this.individuos) {
             index++;    
-            //System.out.println(cromossomo.toString());
+            System.out.println(cromossomo.toString());
             redeNeural.aptidao(cromossomo);          
         }
     }
@@ -177,8 +134,9 @@ public class Ag {
         }
         this.individuosIntermediario = melhores;
         for(int i = 0; i < this.individuosIntermediario.size(); i++) {
-            System.out.println(i + ". Pontuação: " + this.individuosIntermediario.get(i).pontuacao);
-            System.out.println("" + this.individuosIntermediario.get(i).printPath());
+            //System.out.println(i + ". Pontuação: " + this.individuosIntermediario.get(i).pontuacao);
+            //System.out.println("" + this.individuosIntermediario.get(i).printPath());
+            System.out.println(this.individuosIntermediario.get(i).toString());
         }
     }
 
@@ -221,7 +179,6 @@ public class Ag {
                 Random rand = new Random();
                 rands.add(rand.nextInt(2));
             }
-
             for(int i = 0; i < rands.size(); i++) {
                 if(rands.get(i) == 0) {
                     filho.addGene(pai.getGenes().get(i));
@@ -243,9 +200,10 @@ public class Ag {
         int i = index.nextInt(this.individuosIntermediario.size());
         Cromossomo wolverine = this.individuosIntermediario.get(i);
         this.individuosIntermediario.remove(i);
+        
 
         Random escolheGene = new Random();
-        int nGene = escolheGene.nextInt(this.labirinto.qtdCamposLivres());
+        int nGene = escolheGene.nextInt(this.individuosIntermediario.size());
 
         Random valorGene = new Random();
         // double vGene = this.sigmoid(valorGene.nextInt(7) + 1);
