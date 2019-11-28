@@ -14,28 +14,51 @@ class RedeNeural {
     public ArrayList<Double> direcoes = new ArrayList(Arrays.asList(1.0,2.0,3.0,4.0));
     public ArrayList<Double> perceptron = new ArrayList<>();
     public ArrayList<Double> proximaCamada = new ArrayList<>();
+    public Cromossomo cromossomo = null;
     public static Labirinto labirinto = null;
     public static Path agente = new Path(0,0);
     public Utils ar = new Utils();
+    public boolean enquanto = true;
 
     public RedeNeural(Labirinto lab) {
         labirinto = lab;
     }
 
-    public void aptidao(Cromossomo cromossomo) {
-        ArrayList<Double> pesos = cromossomo.getGenes();
+    public void aptidao(Cromossomo c) {
+        this.cromossomo = c;
+        this.enquanto = true;
+        this.agente.x = 0;
+        this.agente.y = 0;
+        // verifica celula
+        System.out.println("NOVO CROMOSSOMO ENTROU NA REDE NEURAL"); 
+        while(this.enquanto == true) {
+            System.out.println(this.enquanto); 
+            System.out.println("ÉPOCA INICIO"); 
+            this.fazEpoca();
+            System.out.println("ÉPOCA FINAL"); 
+        }
+        
+        System.out.println("TO FORA DO WHILE DA REDE NEURAL\n"); 
+    }
+
+    public void fazEpoca() {
         // anda pelo cromossomo
+        ArrayList<Double> pesos = this.cromossomo.getGenes();
         System.out.println("Tamanho = " + pesos.size());       
         this.perceptron = this.criaCamada(pesos, this.direcoes, 0, 12);
-        System.out.println("Perceptron = " + perceptron.toString() + "\n");     
+        System.out.println("Faz Perceptron = " + perceptron.toString() + "\n");     
+
+        // Faz funcão de ativação
         for(int j = 0; j < perceptron.size(); j++) {
             double value = this.ar.sigmoid(perceptron.get(j));
             System.out.println("Valor de saída = " + value);
         }
+
+        // cria a camada de saida
         this.proximaCamada = criaCamada(pesos, this.perceptron, 16, 28);
         System.out.println("Camada seguinte = " + proximaCamada.toString() + "\n");
 
-        // verifica celula
+        // atualiza posição do agente
         agenteCaminha();
     }
 
@@ -49,41 +72,82 @@ class RedeNeural {
             }
         }
         // andar
-        double pontuacao = 0;
+        int x = agente.x;
+        int y = agente.y;
+        double pontuacao = this.cromossomo.pontuacao;
         switch(index) {
             case 0: {
-                pontuacao = this.verificaConteudo(x - 1, y);
+                pontuacao += this.verificaConteudo(x - 1, y);
+                System.out.println("ANDOU CIMA x = " + agente.x + " y = " + agente.y);
+                this.cromossomo.pontuacao = pontuacao;
+                this.cromossomo.path.add(new Path(agente.x, agente.y));
             } break;
             case 1: {
-                pontuacao = this.verificaConteudo(x, y + 1);
+                pontuacao += this.verificaConteudo(x, y + 1);
+                System.out.println("ANDOU DIREITA x = " + agente.x + " y = " + agente.y);
+                this.cromossomo.pontuacao = pontuacao;
+                this.cromossomo.path.add(new Path(agente.x, agente.y));
             } break;
             case 2: {
-                pontuacao = this.verificaConteudo(x + 1, y);
+                pontuacao += this.verificaConteudo(x + 1, y);
+                System.out.println("ANDOU BAIXO x = " + agente.x + " y = " + agente.y);
+                this.cromossomo.pontuacao = pontuacao;
+                this.cromossomo.path.add(new Path(agente.x, agente.y));
             } break;
             case 3: {
-                pontuacao = this.verificaConteudo(x, y - 1);
+                pontuacao += this.verificaConteudo(x, y - 1);
+                System.out.println("ANDOU ESQUERDA x = " + agente.x + " y = " + agente.y);
+                this.cromossomo.pontuacao = pontuacao;
+                this.cromossomo.path.add(new Path(agente.x, agente.y));
             } break;
             default: break;
         }
 
     }
 
-    public double verificaConteudo(int x, int y) {
-        String conteudo = labirinto.getPos(x, y);
+    public double verificaConteudo(int x, int y) {      
         double pontuacao = 0;
+        if(x < 0 || y < 0 || x > 9 || y > 9) {
+            // saiu para fora
+            System.out.println("SAIU");
+            this.enquanto = false;
+            pontuacao = this.manhattan(agente.x, agente.y) - 100;
+            return pontuacao;
+        }
+        String conteudo = labirinto.getPos(x, y);
         switch(conteudo) {
             case "M": 
                 // adiciona moeda e pontuacao de distancia e move agente
+                System.out.println("M");
+                this.setAgente(x, y);
+                pontuacao = 50; //this.manhattan(x, y);               
                 break;
             case "0": 
                 // adiciona somente pontuacao de distancia e move agente
+                System.out.println("0");
+                this.setAgente(x, y);
+                pontuacao = 20;
+                break;
+            case "S": 
+                // ACHOOOOOOO
+                System.out.println("S");
+                this.setAgente(x, y);
+                this.enquanto = false;
                 break;
             case "1": 
                 //parede não move agente e retira cromossomo
-                return -1;
-            default: break;
+                System.out.println("1");
+                this.enquanto = false;
+                pontuacao = this.manhattan(x, y) - 100;
+                return pontuacao;
+            default: System.out.println("E"); break;
         }
         return pontuacao;
+    }
+
+    public void setAgente(int x, int y) {
+        agente.x = x;
+        agente.y = y;
     }
 
     public double manhattan(int x, int y) {

@@ -36,13 +36,13 @@ public class Ag {
         while(cont < 1 ) {
             System.out.println("\n GERAÇÃO : " + cont );
             aplicarAptidao();
-            /*aplicarSelecaoCBF();
+            aplicarSelecaoCBF();
             aplicarBrasileirao();
-            int c = 0;
-            while(c < this.mutacao) {
-                c++;
-                aplicarXmen();
-            }  */      
+            // int c = 0;
+            // while(c < this.mutacao) {
+            //     c++;
+            //     aplicarXmen();
+            // }    
             this.individuos = this.individuosIntermediario;
             this.individuosIntermediario = new ArrayList<Cromossomo>();
             cont++;
@@ -51,15 +51,6 @@ public class Ag {
     }
 
     public double sigmoid(double x) {
-        Random gerador = new Random();
-        int sinal = gerador.nextInt(2);
-        // System.out.println(sinal);
-        if(sinal == 0) {
-            sinal = 1;
-        } else {
-            sinal = -1;
-        }
-        x = x * sinal;
         return 1 / (1 + Math.exp(-x));
     }
 
@@ -171,49 +162,23 @@ public class Ag {
     public int min = Integer.MAX_VALUE;
     public Cromossomo melhorAptidao = null;
     public void aplicarSelecaoCBF() {
-        int index = 0;
-        
-        for (Cromossomo cromossomo : this.individuos) {
-            index++;
-            if(this.min > cromossomo.aptidao) {
-                if(this.aptConvergencia > cromossomo.aptidao) {
-                    System.out.println("CONVERGENCIA");
-                    System.out.println(this.aptConvergencia);
-                    System.out.println(cromossomo.aptidao);
-                    this.contConvergencia = 0;
-                }            
-                this.min = cromossomo.aptidao;
-                this.aptConvergencia = cromossomo.aptidao;
-                this.melhorAptidao = cromossomo;
-                
+        System.out.println("Aplicando seleção");
+        ArrayList<Cromossomo> melhores = new ArrayList<>();
+        for(int i = 0; i < 4; i++) {
+            melhores.add(this.individuos.get(i));
+        }
+        for(int i = 4; i < this.individuos.size(); i++) {
+            for(int j = 0; j < melhores.size(); j++) {
+                if(this.individuos.get(i).pontuacao > melhores.get(j).pontuacao) {
+                    melhores.remove(j);
+                    melhores.add(this.individuos.get(i));
+                }
             }
         }
-
-        if(this.melhorAptidao != null) {
-            this.melhorAptidao.aptidao = 0;
-            this.melhorAptidao.path = new ArrayList<Path>();
-            this.individuosIntermediario.add(this.melhorAptidao);
+        this.individuosIntermediario = melhores;
+        for(int i = 0; i < this.individuosIntermediario.size(); i++) {
+            System.out.println(i + ". Pontuação: " + this.individuosIntermediario.get(i).pontuacao);
         }
-        System.out.println("Aptidão :" + this.aptConvergencia);
-        this.contConvergencia++;
-        System.out.println(this.contConvergencia);
-        
-        if(this.contConvergencia == 250 && this.aptConvergencia == this.min) {
-            this.contConvergencia = 0;
-            Random gerador = new Random();
-            double gene;
-            for(int i = 0; i < this.populacao; i++) {
-                Cromossomo cromossomo = new Cromossomo();
-                for(int j = 0; j < this.tamanhoCromossomo; j++) { 
-                    gene = rand(); //gerador.nextInt(7) + 1; // garante de 1 até 8
-                    cromossomo.addGene(gene);
-                }
-                this.individuosIntermediario.add(cromossomo);
-            }   
-            this.aptConvergencia = 0;
-            this.min = Integer.MAX_VALUE;
-        }
-        this.melhorAptidao = null;
     }
 
     public void aplicarBrasileirao() {
